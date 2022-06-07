@@ -10,7 +10,7 @@ injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;`;
 
-const importReactRE = /(^|\n)import\s+(\*\s+as\s+)?React(,|\s+)/;
+const importReactRE = /import\s+(\*\s+as\s+)?React(,|\s+)/;
 
 let define: { [key: string]: string } | undefined;
 
@@ -41,7 +41,12 @@ export default (): PluginOption => ({
       jsc: {
         target: "es2020",
         transform: {
-          react: { refresh: true, development: true, useBuiltins: true },
+          react: {
+            refresh: true,
+            development: true,
+            useBuiltins: true,
+            runtime: "classic",
+          },
           optimizer: { globals: { vars: define } },
         },
       },
@@ -51,7 +56,7 @@ export default (): PluginOption => ({
       result.code.includes("React.createElement") &&
       !importReactRE.test(result.code)
     ) {
-      result.code = `import React from "react";\n${result.code}`;
+      result.code = `\nimport React from "react";\n${result.code}`;
     }
     if (!result.code.includes("$RefreshReg$")) return result;
 

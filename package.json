@@ -1,10 +1,13 @@
 {
   "name": "@lucasols/vite-plugin-swc-react",
-  "description": "Use the versatility of swc for development and the maturity of esbuild for production",
-  "version": "0.1.0",
+  "description": "...",
+  "version": "0.1.1",
   "license": "MIT",
   "author": "Lucas Santos (https://github.com/lucaslos)",
   "main": "src/swc-react-refresh.js",
+  "repository": {
+    "type": "git"
+  },
   "keywords": [
     "vite",
     "vite-plugin",
@@ -17,7 +20,7 @@
     "build": "tsc",
     "prettier": "pnpm run prettier-ci -- --write",
     "prettier-ci": "prettier --check '**/*.{js,ts,json,md,yml}'",
-    "npm-publish": "pnpm run build && npm publish"
+    "npm-publish": "pnpm run build && npm publish --access=public"
   },
   "prettier": {
     "trailingComma": "all"
