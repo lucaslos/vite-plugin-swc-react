@@ -8,6 +8,13 @@
 			"problemMatcher": [],
 			"label": "npm: build",
 			"detail": "tsc"
+		},
+		{
+			"type": "npm",
+			"script": "npm-publish",
+			"problemMatcher": [],
+			"label": "npm: npm-publish",
+			"detail": "pnpm run build && npm publish --access=public"
 		}
 	]
 }
