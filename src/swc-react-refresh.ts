@@ -47,7 +47,7 @@ export default (): PluginOption => ({
 
     if (isProduction) {
       if (code.includes('React.createElement') && !importReactRE.test(code)) {
-        return { code: `${code}\nimport React from "react";\n` }
+        return { code: `import React from "react";\n${code}` }
       } else {
         return
       }
@@ -75,7 +75,7 @@ export default (): PluginOption => ({
       result.code.includes('React.createElement') &&
       !importReactRE.test(result.code)
     ) {
-      result.code = `${result.code}\nimport React from "react";\n`
+      result.code = `import React from "react";\n${result.code}`
     }
     if (!result.code.includes('$RefreshReg$')) return result
 
