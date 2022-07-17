@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { transform } from '@swc/core'
 import { PluginOption } from 'vite'
+import MagicString from 'magic-string'
 
 const runtimePublicPath = '/@react-refresh'
 
@@ -12,8 +13,11 @@ window.$RefreshSig$ = () => (type) => type;`
 
 const importReactRE = /import\s+(\*\s+as\s+)?React(,|\s+)/
 
+const prependReactImport = 'import React from "react"; '
+
 let define: { [key: string]: string } | undefined
 let isProduction = false
+let needHiresSourcemap = false
 
 export default (): PluginOption => ({
   name: 'react-refresh',
@@ -24,6 +28,9 @@ export default (): PluginOption => ({
       if (config.esbuild) define = config.esbuild.define
       config.esbuild = false
     }
+  },
+  configResolved(config) {
+    needHiresSourcemap = config.command === 'build' && !!config.build.sourcemap
   },
   resolveId: (id) =>
     !isProduction && id === runtimePublicPath ? id : undefined,
@@ -43,22 +50,40 @@ export default (): PluginOption => ({
   },
   async transform(code, id) {
     if (id.includes('node_modules')) return
+
     if (!/\.[jt]sx?$/.test(id)) return
 
+    const hasReactImport = importReactRE.test(code)
+
     if (isProduction) {
-      if (code.includes('React.createElement') && !importReactRE.test(code)) {
-        return { code: `import React from "react";\n${code}` }
+      if (hasReactImport) return
+
+      if (needHiresSourcemap) {
+        const s = new MagicString(code)
+
+        s.prepend(prependReactImport)
+
+        return {
+          code: s.toString(),
+          map: s.generateMap({ hires: true, source: id }),
+        }
       } else {
-        return
+        return { code: prependReactImport + code }
       }
     }
+
+    const isTS = /\.(ts|tsx)$/.test(id)
 
     const result = await transform(code, {
       filename: id,
       swcrc: false,
       configFile: false,
       jsc: {
-        target: 'es2020',
+        target: 'es2021',
+        parser: {
+          syntax: isTS ? 'typescript' : 'ecmascript',
+          [isTS ? 'tsx' : 'jsx']: true,
+        },
         transform: {
           react: {
             refresh: true,
@@ -69,28 +94,16 @@ export default (): PluginOption => ({
           optimizer: { globals: { vars: define } },
         },
       },
+      sourceMaps: true,
     })
 
-    if (
-      result.code.includes('React.createElement') &&
-      !importReactRE.test(result.code)
-    ) {
-      result.code = `import React from "react";\n${result.code}`
+    if (!hasReactImport) {
+      result.code = `${prependReactImport}${result.code}`
     }
+
     if (!result.code.includes('$RefreshReg$')) return result
 
-    const header = `import * as RefreshRuntime from "${runtimePublicPath}";
-
-let prevRefreshReg;
-let prevRefreshSig;
-
-if (!window.$RefreshReg$) throw new Error("React refresh preamble was not loaded. Something is wrong.");
-
-prevRefreshReg = window.$RefreshReg$;
-prevRefreshSig = window.$RefreshSig$;
-window.$RefreshReg$ = RefreshRuntime.getRefreshReg("${id}");
-window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
-`
+    const header = `import * as RefreshRuntime from "${runtimePublicPath}"; let prevRefreshReg; let prevRefreshSig; if (!window.$RefreshReg$) throw new Error("React refresh preamble was not loaded. Something is wrong."); prevRefreshReg = window.$RefreshReg$; prevRefreshSig = window.$RefreshSig$; window.$RefreshReg$ = RefreshRuntime.getRefreshReg("${id}"); window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;`
 
     const footer = `
 window.$RefreshReg$ = prevRefreshReg;

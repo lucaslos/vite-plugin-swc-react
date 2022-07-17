@@ -1,10 +1,10 @@
 {
   "name": "@lucasols/vite-plugin-swc-react",
   "description": "...",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "author": "Lucas Santos (https://github.com/lucaslos)",
-  "main": "src/swc-react-refresh.js",
+  "main": "dist/swc-react-refresh.js",
   "repository": {
     "type": "git"
   },
@@ -17,13 +17,15 @@
     "fast refresh"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "cp ./src/refresh-runtime.js ./dist/refresh-runtime.js && tsc",
+    "build:watch": "tsc -w",
     "prettier": "pnpm run prettier-ci -- --write",
     "prettier-ci": "prettier --check '**/*.{js,ts,json,md,yml}'",
     "npm-publish": "pnpm run build && npm publish --access=public"
   },
   "dependencies": {
-    "@swc/core": "^1.2.205"
+    "@swc/core": "^1.2.215",
+    "magic-string": "^0.26.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.45",

@@ -1,5 +1,3 @@
 .idea/
 node_modules/
-*.js
-*.d.ts
-!lib/src/refresh-runtime.js
+lib/dist/

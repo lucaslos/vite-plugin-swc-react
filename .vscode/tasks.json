@@ -15,6 +15,23 @@
 			"problemMatcher": [],
 			"label": "npm: npm-publish",
 			"detail": "pnpm run build && npm publish --access=public"
+		},
+		{
+			"type": "npm",
+			"script": "dev",
+			"path": "app-test",
+			"problemMatcher": [],
+			"label": "npm: dev - app-test",
+			"detail": "vite"
+		},
+		{
+			"type": "npm",
+			"script": "build-app",
+			"path": "app-test",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build-app - app-test",
+			"detail": "vite build"
 		}
 	]
 }
