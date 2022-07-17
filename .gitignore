@@ -2,4 +2,4 @@
 node_modules/
 *.js
 *.d.ts
-!src/refresh-runtime.js
+!lib/src/refresh-runtime.js
