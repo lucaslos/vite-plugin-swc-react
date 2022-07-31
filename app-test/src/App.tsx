@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
+import { css } from '@linaria/core'
+import { styled } from '@linaria/react'
+
+const test = css`
+  color: red;
+`
+
+const StyledTest = styled.div`
+  color: blue;
+`
 
 function App() {
   const [count, setCount] = useState(0)
@@ -11,6 +21,7 @@ function App() {
         <a
           href="https://vitejs.dev"
           target="_blank"
+          className={test}
         >
           <img
             src="/vite.svg"
@@ -40,9 +51,10 @@ function App() {
 
         <button
           onClick={() => {
+
             debugger
 
-            console.log('hello')
+            console.log('hello23')
 
             debugger
           }}
@@ -52,6 +64,8 @@ function App() {
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
+
+        <StyledTest>Test</StyledTest>
       </p>
     </div>
   )
