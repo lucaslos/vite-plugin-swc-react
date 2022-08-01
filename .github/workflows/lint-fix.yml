@@ -23,21 +23,20 @@ jobs:
         run: git pr checkout ${{ github.event.issue.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - run: |
           echo A comment on PR $NUMBER
           echo "sdf" > file.txt
         env:
-          NUMBER: ${{ github.event.issue.number }}X
+          NUMBER: ${{ github.event.issue.number }}
+          URL: https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"'
+
       - uses: stefanzweifel/git-auto-commit-action@v4
 
       - name: Create result
         if: ${{ failure() }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git pr comment --body "[Autofix failed :(]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')"
+        run: git pr comment $NUMBER --body "[Autofix failed :(]($URL)"
 
       - name: Create result
         if: ${{ success() }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git pr comment --body "[Autofix failed :(]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')"
+        run: git pr comment $NUMBER --body "[Autofix failed :(]($URL)"
