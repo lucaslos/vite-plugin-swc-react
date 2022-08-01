@@ -21,7 +21,7 @@ jobs:
 
       - name: Create comment
         run: |
-          gh pr comment $NUMBER --body ":rocket: [starting autofix)]($URL)"
+          gh pr comment $NUMBER --body ":rocket: [starting autofix]($URL)"
 
       - name: Checkout Pull Request
         run: gh pr checkout ${{ github.event.issue.number }}
@@ -35,7 +35,7 @@ jobs:
       - name: Create result
         if: ${{ failure() }}
         run: |
-          gh pr comment $NUMBER --body ":red_circle: [Finished autofix with errors]($URL)"
+          gh pr comment $NUMBER --body ":red_circle: Finished autofix with errors/warnings -> [result]($URL)"
 
       - name: Create result
         if: ${{ success() }}
