@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NUMBER: ${{ github.event.issue.number }}
-      URL: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+      URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
