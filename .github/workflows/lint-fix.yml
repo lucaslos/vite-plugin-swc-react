@@ -32,5 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: |
           echo A comment on PR $NUMBER
+          echo "sdf" > file.txt
         env:
           NUMBER: ${{ github.event.issue.number }}
+      - uses: stefanzweifel/git-auto-commit-action@v4
