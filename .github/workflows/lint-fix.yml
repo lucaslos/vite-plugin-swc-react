@@ -16,23 +16,28 @@ jobs:
 
       - name: Create comment
         env:
-          URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "[starting autofix :)]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')" }'
+        run: git pr comment --body "[starting autofix :)]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')"
 
       - name: Checkout Pull Request
-        run: hub pr checkout ${{ github.event.issue.number }}
+        run: git pr checkout ${{ github.event.issue.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: |
           echo A comment on PR $NUMBER
           echo "sdf" > file.txt
         env:
-          NUMBER: ${{ github.event.issue.number }}
+          NUMBER: ${{ github.event.issue.number }}X
       - uses: stefanzweifel/git-auto-commit-action@v4
+
+      - name: Create result
+        if: ${{ failure() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git pr comment --body "[Autofix failed :(]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')"
+
+      - name: Create result
+        if: ${{ success() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git pr comment --body "[Autofix failed :(]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')"
