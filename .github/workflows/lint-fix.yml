@@ -10,26 +10,24 @@ jobs:
     name: PR comment
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
+    env:
+      NUMBER: ${{ github.event.issue.number }}
+      URL: https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Create comment
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git pr comment --body "[starting autofix :)]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')"
+        run: gh pr comment --body "[starting autofix :)]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')"
 
       - name: Checkout Pull Request
         run: git pr checkout ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: |
           echo A comment on PR $NUMBER
           echo "sdf" > file.txt
-        env:
-          NUMBER: ${{ github.event.issue.number }}
-          URL: https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"'
 
       - uses: stefanzweifel/git-auto-commit-action@v4
 
