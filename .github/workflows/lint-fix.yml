@@ -35,8 +35,8 @@ jobs:
 
       - name: Create result
         if: ${{ failure() }}
-        run: git pr comment $NUMBER --body "[Autofix failed :(]($URL)"
+        run: gh pr comment $NUMBER --body "[Autofix failed :(]($URL)"
 
       - name: Create result
         if: ${{ success() }}
-        run: git pr comment $NUMBER --body "[Autofix failed :(]($URL)"
+        run: gh pr comment $NUMBER --body "[Autofix failed :(]($URL)"
