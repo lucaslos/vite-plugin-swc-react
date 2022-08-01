@@ -38,3 +38,5 @@ For React refresh to work, your file should only export React components. The be
 However, having some components being hot updated and not others is a very frustrating experience as a developer, and I think this rule should be enforced by a linter, so I made an [eslint rule](https://github.com/ArnaudBarre/eslint-plugin-react-refresh) to go along with this plugin.
 
 This plugin expects this rule to be respected and will always fast refresh components. If a file export something that is not a React component (TS types are ok), update to this export would not propagate and require a manual reload.
+
+Test
